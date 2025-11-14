@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scholarship Adda</title>
+  <style>
+    :root {
+      --dark-blue: #0b1d4a;
+      --accent-blue: #2563eb;
+      --accent-purple: #7c3aed;
+      --text-light: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    /* 🌌 Animated dark blue background */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(120deg, #000428, #004e92, #0b1d4a);
+      background-size: 400% 400%;
+      animation: backgroundAnimation 10s ease infinite;
+      color: var(--text-light);
+    }
+
+    @keyframes backgroundAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 🟣 Animated box (blue → purple) */
+    .login-box {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      background-size: 300% 300%;
+      animation: boxAnimation 6s ease infinite;
+      padding: 40px 35px;
+      border-radius: 18px;
+      width: 360px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      color: white;
+      text-align: center;
+    }
+
+    @keyframes boxAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h2 {
+      font-size: 1.9em;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 12px 0 6px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+      outline: none;
+      color: #111;
+    }
+
+    input:focus {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      background-color: #111827;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 5px;
+    }
+
+    .btn:hover {
+      background-color: #1e293b;
+      transform: scale(1.03);
+    }
+
+    .error {
+      color: #ffb4b4;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+
+    .success {
+      color: #b9ffb4;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+
+    .toggle-link {
+      color: #fff;
+      text-decoration: underline;
+      cursor: pointer;
+      display: block;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2 id="formTitle">Scholarship Adda - Login</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <label for="username">Username</label>
+      <input type="text" id="loginUsername" placeholder="Enter your username" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter your password" required />
+
+      <p id="loginMessage" class="error"></p>
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <!-- Sign Up Form (hidden by default) -->
+    <form id="signupForm" style="display: none;">
+      <label for="newUsername">Create Username</label>
+      <input type="text" id="newUsername" placeholder="Set your username" required />
+
+      <label for="newPassword">Create Password</label>
+      <input type="password" id="newPassword" placeholder="Set your password" required />
+
+      <p id="signupMessage" class="error"></p>
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <p class="toggle-link" id="toggleForm">Don't have an account? Sign Up</p>
+    <p id="successMessage" class="success"></p>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const toggleForm = document.getElementById("toggleForm");
+    const successMessage = document.getElementById("successMessage");
+
+    // Switch between Login and Sign Up
+    toggleForm.addEventListener("click", () => {
+      if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        signupForm.style.display = "none";
+        toggleForm.textContent = "Don't have an account? Sign Up";
+        document.getElementById("formTitle").textContent = "Scholarship Adda - Login";
+      } else {
+        loginForm.style.display = "none";
+        signupForm.style.display = "block";
+        toggleForm.textContent = "Already have an account? Login";
+        document.getElementById("formTitle").textContent = "Scholarship Adda - Sign Up";
+      }
+      successMessage.textContent = "";
+    });
+
+    // 🟢 Sign Up - Save credentials in localStorage
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newUsername = document.getElementById("newUsername").value.trim();
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const signupMessage = document.getElementById("signupMessage");
+
+      if (newUsername === "" || newPassword === "") {
+        signupMessage.textContent = "⚠️ Please fill in all fields!";
+        return;
+      }
+
+      // Check if username already exists
+      if (localStorage.getItem(newUsername)) {
+        signupMessage.textContent = "⚠️ Username already exists!";
+        return;
+      }
+
+      // Save new user credentials
+      localStorage.setItem(newUsername, newPassword);
+      signupMessage.textContent = "";
+      successMessage.textContent = "✅ Account created successfully! Please log in.";
+      signupForm.reset();
+
+      // Switch back to login form
+      toggleForm.click();
+    });
+
+    // 🔵 Login - Verify credentials
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      const loginMessage = document.getElementById("loginMessage");
+
+      const storedPassword = localStorage.getItem(username);
+
+      if (storedPassword && storedPassword === password) {
+        loginMessage.textContent = "";
+        successMessage.textContent = `✅ Welcome ${username}! Redirecting...`;
+        setTimeout(() => {
+          window.location.href = "https://example.com"; // Change this to your homepage
+        }, 2000);
+      } else {
+        successMessage.textContent = "";
+        loginMessage.textContent = "❌ Invalid username or password!";
+      }
+    });
+  </script>
+</body>
+</html>
